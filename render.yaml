@@ -5,14 +5,18 @@ services:
     plan: free
     branch: main
     autoDeployTrigger: commit
-    healthCheckPath: /v3/api-docs
+    healthCheckPath: /swagger-ui/index.html
     envVars:
+      - key: PORT
+        value: "8080"
+      - key: DB_ENGINE
+        value: "mysql"
       - key: DB_HOST
         sync: false
       - key: DB_PORT
         sync: false
       - key: DB_NAME
-        value: crud_usuarios
+        sync: false
       - key: DB_USERNAME
         sync: false
       - key: DB_PASSWORD
