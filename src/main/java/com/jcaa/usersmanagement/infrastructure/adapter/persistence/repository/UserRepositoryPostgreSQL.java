@@ -15,6 +15,7 @@ import com.jcaa.usersmanagement.infrastructure.adapter.persistence.exception.Per
 import com.jcaa.usersmanagement.infrastructure.adapter.persistence.mapper.UserPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -24,13 +25,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @Slf4j
 @Repository
-@ConditionalOnProperty(name = "db.engine", havingValue = "mysql", matchIfMissing = true)
+@ConditionalOnProperty(name = "db.engine", havingValue = "postgresql")
 @RequiredArgsConstructor
-public class UserRepositoryMySQL
+public class UserRepositoryPostgreSQL
     implements SaveUserPort,
         UpdateUserPort,
         GetUserByIdPort,
@@ -63,13 +63,14 @@ public class UserRepositoryMySQL
       + "ORDER BY name ASC";
 
   private static final String SQL_DELETE =
-        "DELETE FROM users "
-        + "WHERE id = ?";
+      "DELETE FROM users "
+      + "WHERE id = ?";
 
   private final DataSource dataSource;
 
   @Override
   public UserModel save(final UserModel user) {
+    log.debug("[UserRepositoryPostgreSQL] Guardando usuario con id={}", user.getId().value());
     final UserPersistenceDto dto = UserPersistenceMapper.fromModelToDto(user);
     executeSave(dto);
     return findByIdOrFail(user.getId());
@@ -77,6 +78,7 @@ public class UserRepositoryMySQL
 
   @Override
   public UserModel update(final UserModel user) {
+    log.debug("[UserRepositoryPostgreSQL] Actualizando usuario con id={}", user.getId().value());
     final UserPersistenceDto dto = UserPersistenceMapper.fromModelToDto(user);
     executeUpdate(dto);
     return findByIdOrFail(user.getId());
