@@ -28,4 +28,34 @@ class DatabaseConfigTest {
             "jdbc:mysql://mysql.example.com:15425/crud_usuarios"
                 + "?sslMode=REQUIRED&serverTimezone=UTC&allowPublicKeyRetrieval=true");
   }
+
+  @Test
+  void shouldBuildPostgreSqlJdbcUrlWhenEngineIsPostgreSql() {
+    // Arrange
+    final DatabaseConfig config =
+        new DatabaseConfig("postgres.example.com", 5432, "crud_usuarios", "pguser", "pgpass", "REQUIRED", "postgresql");
+
+    // Act
+    final String jdbcUrl = config.buildJdbcUrl();
+
+    // Assert
+    assertThat(jdbcUrl)
+        .isEqualTo("jdbc:postgresql://postgres.example.com:5432/crud_usuarios?sslmode=require");
+    assertThat(config.isPostgreSql()).isTrue();
+  }
+
+  @Test
+  void shouldBuildPostgreSqlJdbcUrlWhenPortIs5432() {
+    // Arrange
+    final DatabaseConfig config =
+        new DatabaseConfig("postgres.example.com", 5432, "crud_usuarios", "pguser", "pgpass", "DISABLED");
+
+    // Act
+    final String jdbcUrl = config.buildJdbcUrl();
+
+    // Assert
+    assertThat(jdbcUrl)
+        .isEqualTo("jdbc:postgresql://postgres.example.com:5432/crud_usuarios?sslmode=disable");
+    assertThat(config.isPostgreSql()).isTrue();
+  }
 }

@@ -17,7 +17,7 @@ public class SecurityConfig {
   private static final String USERS_PATH = "/api/users";
   private static final String USERS_DETAIL_PATH = "/api/users/**";
   private static final String[] OPEN_API_PATHS = {
-    "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**"
+    "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**"
   };
 
   @Bean

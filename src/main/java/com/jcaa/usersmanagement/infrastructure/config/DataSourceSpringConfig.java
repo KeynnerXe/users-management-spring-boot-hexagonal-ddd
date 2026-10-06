@@ -19,8 +19,9 @@ public class DataSourceSpringConfig {
   private static final String PROP_DB_USERNAME = "${db.username}";
   private static final String PROP_DB_PASSWORD = "${db.password}";
   private static final String PROP_DB_SSL_MODE = "${db.ssl-mode}";
+  private static final String PROP_DB_ENGINE   = "${db.engine:mysql}";
 
-  private static final String LOG_DATASOURCE_INIT = "[DataSourceSpringConfig] DataSource inicializado. host={} port={}";
+  private static final String LOG_DATASOURCE_INIT = "[DataSourceSpringConfig] DataSource inicializado. host={} port={} engine={}";
 
   @Value(PROP_DB_HOST)
   private String dbHost;
@@ -40,20 +41,28 @@ public class DataSourceSpringConfig {
   @Value(PROP_DB_SSL_MODE)
   private String dbSslMode;
 
+  @Value(PROP_DB_ENGINE)
+  private String dbEngine;
+
   @Bean
   public DataSource dataSource() {
     final DatabaseConfig config =
-        new DatabaseConfig(dbHost, dbPort, dbName, dbUsername, dbPassword, dbSslMode);
+        new DatabaseConfig(dbHost, dbPort, dbName, dbUsername, dbPassword, dbSslMode, dbEngine);
 
     final HikariConfig hikariConfig = new HikariConfig();
     hikariConfig.setJdbcUrl(config.buildJdbcUrl());
+    if (config.isPostgreSql()) {
+      hikariConfig.setDriverClassName("org.postgresql.Driver");
+    } else {
+      hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+    }
     hikariConfig.setUsername(config.username());
     hikariConfig.setPassword(config.password());
     hikariConfig.setMaximumPoolSize(10);
     hikariConfig.setMinimumIdle(2);
     hikariConfig.setConnectionTimeout(30_000);
 
-    log.info(LOG_DATASOURCE_INIT, dbHost, dbPort);
+    log.info(LOG_DATASOURCE_INIT, dbHost, dbPort, config.isPostgreSql() ? "postgresql" : "mysql");
     return new HikariDataSource(hikariConfig);
   }
 }
