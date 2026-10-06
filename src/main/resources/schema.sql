@@ -26,7 +26,7 @@ VALUES (
     '00000000-0000-0000-0000-000000000001',
     'Administrador',
     'admin@example.com',
-    '$2a$12$sfwkajsls.fktQb0Ngw5cOiSiV3z4LIwbucSAy4sw2wyNlxbUBt4q',
+    '$2a$12$IMURPdZJyQ3ti/p8dswt2uWpTsYOJVUW1zbDg.m04s5RqIbCsRq4G',
     'ADMIN',
     'ACTIVE'
 );
